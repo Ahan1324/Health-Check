@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Health Analysis{% endblock %}</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f8fdf9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #d4f0e0;
+            padding: 1rem 2rem;
+            text-align: center;
+            font-size: 1.5rem;
+            color: #2e6d5c;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        main {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #2e6d5c;
+        }
+        button, input[type="submit"] {
+            background: #94d3ac;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        button:hover, input[type="submit"]:hover {
+            background: #7fcba0;
+        }
+        form select, form input[type="text"], form textarea {
+            width: 100%;
+            padding: 0.6rem;
+            margin: 0.5rem 0 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .card {
+            background: #f0f8f5;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 5px solid #94d3ac;
+        }
+        pre {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+    {% block extra_style %}{% endblock %}
+</head>
+<body>
+    <header>
+        Health Insights Platform
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends "bloodapp/base.html" %}
+
+{% block title %}Submit Blood Test{% endblock %}
+
+{% block content %}
+<h1>Submit Your Blood Test Results</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}

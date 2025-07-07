@@ -1,0 +1,31 @@
+{% extends "bloodapp/base.html" %}
+
+{% block title %}Analysis Results{% endblock %}
+
+{% block content %}
+<h1>Thank you, {{ patient }}!</h1>
+<h2>Your Analysis</h2>
+<pre style="white-space: pre-wrap;">{{ analysis }}</pre>
+
+<h2>Potential Health Conditions</h2>
+{% for cond in at_risk_conditions %}
+    <div class="card">
+        <h3>{{ cond.condition_id|title }}</h3>
+        <p><strong>Risk Level:</strong> {{ cond.level_of_risk }}</p>
+        <p>{{ cond.explanation }}</p>
+        {% if cond.detailed_analysis %}
+            <div>
+                <h4>Detailed Risk Analysis</h4>
+                <p><strong>Risk Score:</strong> {{ cond.risk_score }}/100</p>
+                <p>{{ cond.detailed_explanation }}</p>
+            </div>
+        {% else %}
+            <form action="{% url 'quiz_condition' cond.condition_id %}" method="get">
+                <button type="submit">Fill Symptom Quiz</button>
+            </form>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>No significant risks detected.</p>
+{% endfor %}
+{% endblock %}

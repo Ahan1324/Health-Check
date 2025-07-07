@@ -1,0 +1,268 @@
+{
+  "markers": [
+    {
+      "marker_id": "Ferritin",
+      "background": "Ferritin reflects body iron stores.",
+      "discussion": "Low ferritin is an early indicator of iron deficiency, while high levels can indicate inflammation or iron overload.",
+      "ranges": {
+        "standard_us": {"min": 20, "max": 300},
+        "optimal_us": {"min": 50, "max": 150},
+        "standard_international": {"min": 20, "max": 300},
+        "optimal_international": {"min": 50, "max": 150}
+      },
+      "low": [
+        {"clinical_implication": "Iron deficiency anemia", "explanation": "Ferritin decreases before hemoglobin in iron depletion."}
+      ],
+      "high": [
+        {"clinical_implication": "Possible hemochromatosis or inflammation", "explanation": "Ferritin is an acute-phase reactant."}
+      ],
+      "other_low": ["chronic bleeding", "malabsorption"],
+      "other_high": ["liver disease", "chronic inflammation"],
+      "interfering_factors": {
+        "falsely_increased": ["acute infection", "malignancy"],
+        "falsely_decreased": []
+      },
+      "drug_associations": {
+        "increased": [],
+        "decreased": []
+      }
+    },
+    {
+      "marker_id": "CRP",
+      "background": "C-reactive protein is an inflammatory marker.",
+      "discussion": "Used to detect acute inflammation or monitor chronic inflammatory diseases.",
+      "ranges": {
+        "standard_us": {"min": 0, "max": 3},
+        "optimal_us": {"min": 0, "max": 1},
+        "standard_international": {"min": 0, "max": 3},
+        "optimal_international": {"min": 0, "max": 1}
+      },
+      "low": [],
+      "high": [
+        {"clinical_implication": "Active inflammation or infection", "explanation": "CRP rises rapidly in response to cytokines."}
+      ],
+      "other_low": [],
+      "other_high": ["autoimmune diseases", "cardiovascular risk"],
+      "interfering_factors": {
+        "falsely_increased": ["pregnancy"],
+        "falsely_decreased": []
+      },
+      "drug_associations": {
+        "increased": [],
+        "decreased": ["statins"]
+      }
+    },
+    {
+      "marker_id": "TSH",
+      "background": "Thyroid-stimulating hormone regulates thyroid activity.",
+      "discussion": "Primary test for thyroid function; high TSH suggests hypothyroidism, low suggests hyperthyroidism.",
+      "ranges": {
+        "standard_us": {"min": 0.4, "max": 4.5},
+        "optimal_us": {"min": 1, "max": 2},
+        "standard_international": {"min": 0.4, "max": 4.5},
+        "optimal_international": {"min": 1, "max": 2}
+      },
+      "low": [
+        {"clinical_implication": "Hyperthyroidism", "explanation": "Negative feedback suppresses TSH."}
+      ],
+      "high": [
+        {"clinical_implication": "Hypothyroidism", "explanation": "Pituitary increases TSH to stimulate thyroid."}
+      ],
+      "other_low": ["pituitary damage"],
+      "other_high": ["thyroid resistance"],
+      "interfering_factors": {
+        "falsely_increased": ["biotin supplementation"],
+        "falsely_decreased": ["high-dose steroids"]
+      },
+      "drug_associations": {
+        "increased": ["lithium"],
+        "decreased": ["dopamine agonists"]
+      }
+    },
+    {
+      "marker_id": "Vitamin D",
+      "background": "25(OH)D reflects vitamin D stores.",
+      "discussion": "Essential for calcium balance and immune function.",
+      "ranges": {
+        "standard_us": {"min": 30, "max": 100},
+        "optimal_us": {"min": 50, "max": 80},
+        "standard_international": {"min": 75, "max": 250},
+        "optimal_international": {"min": 125, "max": 200}
+      },
+      "low": [
+        {"clinical_implication": "Osteoporosis risk", "explanation": "Low vitamin D impairs calcium absorption."}
+      ],
+      "high": [
+        {"clinical_implication": "Potential toxicity", "explanation": "Excessive supplementation may lead to hypercalcemia."}
+      ],
+      "other_low": ["autoimmune conditions"],
+      "other_high": ["sarcoidosis"],
+      "interfering_factors": {
+        "falsely_increased": [],
+        "falsely_decreased": ["obesity"]
+      },
+      "drug_associations": {
+        "increased": [],
+        "decreased": ["anticonvulsants"]
+      }
+    },
+    {
+      "marker_id": "Homocysteine",
+      "background": "Amino acid linked to B vitamin status and cardiovascular risk.",
+      "discussion": "Elevations linked to B12, B6, folate deficiencies.",
+      "ranges": {
+        "standard_us": {"min": 5, "max": 15},
+        "optimal_us": {"min": 5, "max": 9},
+        "standard_international": {"min": 5, "max": 15},
+        "optimal_international": {"min": 5, "max": 9}
+      },
+      "low": [],
+      "high": [
+        {"clinical_implication": "Increased cardiovascular risk", "explanation": "Homocysteine may damage endothelium."}
+      ],
+      "other_low": [],
+      "other_high": ["MTHFR mutation"],
+      "interfering_factors": {
+        "falsely_increased": ["smoking"],
+        "falsely_decreased": []
+      },
+      "drug_associations": {
+        "increased": ["methotrexate"],
+        "decreased": ["folic acid"]
+      }
+    },
+    {
+      "marker_id": "LDL",
+      "background": "Low-density lipoprotein cholesterol, atherogenic particle.",
+      "discussion": "High LDL is a primary risk factor for atherosclerosis.",
+      "ranges": {
+        "standard_us": {"min": 0, "max": 130},
+        "optimal_us": {"min": 0, "max": 100},
+        "standard_international": {"min": 0, "max": 3.4},
+        "optimal_international": {"min": 0, "max": 2.6}
+      },
+      "low": [
+        {"clinical_implication": "Possible malabsorption", "explanation": "Very low LDL may occur with chronic illness."}
+      ],
+      "high": [
+        {"clinical_implication": "Atherosclerosis risk", "explanation": "LDL deposits cholesterol in arterial walls."}
+      ],
+      "other_low": ["hyperthyroidism"],
+      "other_high": ["nephrotic syndrome"],
+      "interfering_factors": {
+        "falsely_increased": ["fasting too long"],
+        "falsely_decreased": ["acute illness"]
+      },
+      "drug_associations": {
+        "increased": ["thiazides"],
+        "decreased": ["statins"]
+      }
+    },
+    {
+      "marker_id": "ALT",
+      "background": "Alanine aminotransferase, liver enzyme.",
+      "discussion": "Elevated in liver cell injury.",
+      "ranges": {
+        "standard_us": {"min": 0, "max": 40},
+        "optimal_us": {"min": 0, "max": 25},
+        "standard_international": {"min": 0, "max": 40},
+        "optimal_international": {"min": 0, "max": 25}
+      },
+      "low": [],
+      "high": [
+        {"clinical_implication": "Liver cell damage", "explanation": "ALT leaks from damaged hepatocytes."}
+      ],
+      "other_low": [],
+      "other_high": ["NAFLD", "viral hepatitis"],
+      "interfering_factors": {
+        "falsely_increased": ["muscle injury"],
+        "falsely_decreased": []
+      },
+      "drug_associations": {
+        "increased": ["statins"],
+        "decreased": []
+      }
+    },
+    {
+      "marker_id": "Creatinine",
+      "background": "Reflects kidney filtration efficiency.",
+      "discussion": "Elevations indicate reduced GFR.",
+      "ranges": {
+        "standard_us": {"min": 0.6, "max": 1.3},
+        "optimal_us": {"min": 0.7, "max": 1.0},
+        "standard_international": {"min": 53, "max": 115},
+        "optimal_international": {"min": 62, "max": 88}
+      },
+      "low": [
+        {"clinical_implication": "Possible muscle wasting", "explanation": "Low creatinine from low muscle mass."}
+      ],
+      "high": [
+        {"clinical_implication": "Reduced kidney function", "explanation": "Impaired clearance raises serum levels."}
+      ],
+      "other_low": ["cachexia"],
+      "other_high": ["dehydration"],
+      "interfering_factors": {
+        "falsely_increased": ["large muscle mass"],
+        "falsely_decreased": []
+      },
+      "drug_associations": {
+        "increased": ["ACE inhibitors"],
+        "decreased": []
+      }
+    },
+    {
+      "marker_id": "WBC",
+      "background": "White blood cell count, immune system indicator.",
+      "discussion": "High counts suggest infection or stress, low counts may indicate marrow suppression.",
+      "ranges": {
+        "standard_us": {"min": 4, "max": 11},
+        "optimal_us": {"min": 5, "max": 8},
+        "standard_international": {"min": 4, "max": 11},
+        "optimal_international": {"min": 5, "max": 8}
+      },
+      "low": [
+        {"clinical_implication": "Risk of infection", "explanation": "Low WBC reduces immune defense."}
+      ],
+      "high": [
+        {"clinical_implication": "Active infection or stress response", "explanation": "WBC rises with cytokine stimulation."}
+      ],
+      "other_low": ["chemotherapy"],
+      "other_high": ["corticosteroid use"],
+      "interfering_factors": {
+        "falsely_increased": ["stress"],
+        "falsely_decreased": ["severe infections"]
+      },
+      "drug_associations": {
+        "increased": ["corticosteroids"],
+        "decreased": ["chemotherapy agents"]
+      }
+    },
+    {
+        "marker_id": "HbA1c",
+        "background": "Average blood glucose over 2-3 months.",
+        "discussion": "Useful in diagnosing diabetes and assessing long-term control.",
+        "ranges": {
+            "standard_us": {"min": 4, "max": 5.6},
+            "optimal_us": {"min": 4.5, "max": 5.2},
+            "standard_international": {"min": 20, "max": 38},
+            "optimal_international": {"min": 26, "max": 33}
+        },
+        "low": [
+            {"clinical_implication": "Possible over-treatment of diabetes", "explanation": "Risk of hypoglycemia."}
+        ],
+        "high": [
+            {"clinical_implication": "Poor glucose control", "explanation": "Indicates chronic hyperglycemia."}
+        ],
+        "other_low": ["hemolytic anemia"],
+        "other_high": ["Cushing's syndrome"],
+        "interfering_factors": {
+            "falsely_increased": ["iron deficiency anemia"],
+            "falsely_decreased": ["recent blood loss"]
+        },
+        "drug_associations": {
+            "increased": [],
+            "decreased": []
+        }
+    }
+]
+}

@@ -1,0 +1,77 @@
+{
+  "health_conditions": [
+    {
+      "condition_id": "iron_deficiency_anemia",
+      "background": "Iron deficiency anemia is the most common type of anemia worldwide, caused by insufficient iron.",
+      "signs_and_symptoms": ["fatigue", "pallor", "shortness of breath", "brittle nails"],
+      "differential_diagnoses": ["anemia of chronic disease", "thalassemia"],
+      "causes": ["chronic blood loss", "poor dietary intake", "malabsorption"],
+      "diseases": ["microcytic anemia"],
+      "treatment": "Iron supplementation and addressing underlying cause of blood loss.",
+      "associated_markers_low": [
+        {"marker": "Ferritin", "explanation": "Decreases early in iron deficiency."}
+      ],
+      "associated_markers_high": [
+        {"marker": "HbA1c", "explanation": "Can be falsely elevated in iron deficiency."}
+      ]
+    },
+    {
+      "condition_id": "Hypothyroidism",
+      "background": "Hypothyroidism is reduced thyroid hormone production, slowing metabolism.",
+      "signs_and_symptoms": ["weight gain", "cold intolerance", "dry skin", "constipation"],
+      "differential_diagnoses": ["depression", "anemia"],
+      "causes": ["Hashimoto's thyroiditis", "iodine deficiency"],
+      "diseases": ["primary hypothyroidism"],
+      "treatment": "Levothyroxine replacement therapy.",
+      "associated_markers_low": [],
+      "associated_markers_high": [
+        {"marker": "TSH", "explanation": "Pituitary raises TSH to stimulate thyroid."},
+        {"marker": "LDL", "explanation": "Reduced thyroid activity elevates LDL levels."}
+      ]
+    },
+    {
+      "condition_id": "chronic_inflammation",
+      "background": "A prolonged inflammatory state, often subclinical, increasing chronic disease risk.",
+      "signs_and_symptoms": ["mild fatigue", "joint stiffness", "low-grade fever"],
+      "differential_diagnoses": ["autoimmune conditions", "infection"],
+      "causes": ["obesity", "chronic infections", "autoimmune diseases"],
+      "diseases": ["rheumatoid arthritis", "SLE"],
+      "treatment": "Managing underlying cause and lifestyle changes.",
+      "associated_markers_low": [],
+      "associated_markers_high": [
+        {"marker": "CRP", "explanation": "Rises in response to inflammatory cytokines."},
+        {"marker": "Ferritin", "explanation": "Acts as an acute-phase reactant, elevates in inflammation."}
+      ]
+    },
+    {
+      "condition_id": "vitamin_d_deficiency",
+      "background": "Low vitamin D impairs calcium absorption and immune function.",
+      "signs_and_symptoms": ["bone pain", "muscle weakness", "frequent infections"],
+      "differential_diagnoses": ["hyperparathyroidism", "osteomalacia"],
+      "causes": ["lack of sun exposure", "poor dietary intake", "malabsorption"],
+      "diseases": ["osteoporosis", "rickets"],
+      "treatment": "Vitamin D supplementation and sun exposure.",
+      "associated_markers_low": [
+        {"marker": "Vitamin D", "explanation": "Direct measure of vitamin D status."}
+      ],
+      "associated_markers_high": [
+        {"marker": "Homocysteine", "explanation": "Can be elevated alongside low vitamin D due to shared deficiencies."}
+      ]
+    },
+    {
+      "condition_id": "type_2_diabetes",
+      "background": "A metabolic disorder characterized by insulin resistance and chronic hyperglycemia.",
+      "signs_and_symptoms": ["polyuria", "polydipsia", "blurred vision", "fatigue"],
+      "differential_diagnoses": ["type 1 diabetes", "Cushing's syndrome"],
+      "causes": ["obesity", "genetic predisposition", "sedentary lifestyle"],
+      "diseases": ["metabolic syndrome"],
+      "treatment": "Lifestyle modification, oral hypoglycemics, and sometimes insulin.",
+      "associated_markers_low": [],
+      "associated_markers_high": [
+        {"marker": "HbA1c", "explanation": "Reflects chronic hyperglycemia."},
+        {"marker": "LDL", "explanation": "Often elevated in insulin resistance."},
+        {"marker": "CRP", "explanation": "Low-grade inflammation is common."}
+      ]
+    }
+  ]
+}
