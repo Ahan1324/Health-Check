@@ -1,4 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from .forms import SignUpForm, LoginForm
 from .forms import BloodTestForm
 import json
 import os
@@ -6,23 +9,19 @@ from django.conf import settings
 from .utils import get_health_conditions_from_analysis
 from .utils import safe_json_loads
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
 
 import difflib
+from .models import Marker, HealthCondition
 
 def find_closest_condition_id(name, valid_ids):
     closest = difflib.get_close_matches(name.lower(), valid_ids, n=1, cutoff=0.5)
     return closest[0] if closest else None
 
 def load_markers_data():
-    markers_file = os.path.join(settings.BASE_DIR, 'bloodapp', 'markers.json')
-    with open(markers_file, 'r') as f:
-        return json.load(f)
+    return {"markers": list(Marker.objects.all().values())}
 
 def load_health_conditions_data():
-    file_path = os.path.join(settings.BASE_DIR, 'bloodapp', 'health_conditions.json')
-    with open(file_path, 'r') as f:
-        return json.load(f)
+    return {"health_conditions": list(HealthCondition.objects.all().values())}
 
 from django.shortcuts import redirect
 
@@ -166,10 +165,9 @@ def submit_blood_test(request):
 
 
 def quiz_condition(request, condition_name):
-    health_conditions_data = load_health_conditions_data()["health_conditions"]
-    condition = next((c for c in health_conditions_data if c["condition_id"] == condition_name), None)
-
-    if not condition:
+    try:
+        condition = HealthCondition.objects.get(condition_id=condition_name)
+    except HealthCondition.DoesNotExist:
         return HttpResponse("Condition not found", status=404)
 
     patient_data = request.session.get("patient_data")
@@ -179,7 +177,7 @@ def quiz_condition(request, condition_name):
     if request.method == 'POST':
         # Build structured responses
         symptom_answers = {}
-        for symptom in condition["signs_and_symptoms"]:
+        for symptom in condition.signs_and_symptoms:
             answer = request.POST.get(f"{symptom}_answer")
             info = request.POST.get(f"{symptom}_info", "").strip()
             symptom_answers[symptom] = {
@@ -220,5 +218,34 @@ def quiz_condition(request, condition_name):
 
         return redirect('submit_blood_test')
 
-
     return render(request, 'bloodapp/quiz.html', {'condition': condition})
+
+def signup_view(request):
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("home")
+    else:
+        form = SignUpForm()
+    return render(request, "bloodapp/signup.html", {"form": form})
+
+def login_view(request):
+    if request.method == "POST":
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect("home")
+    else:
+        form = LoginForm()
+    return render(request, "bloodapp/login.html", {"form": form})
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
+
+@login_required
+def home_view(request):
+    return render(request, "bloodapp/home.html")

@@ -77,8 +77,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'blooddb',
-        'USER': 'your_postgres_user',
-        'PASSWORD': 'your_password',
+        'USER': 'postgres',
+        'PASSWORD': 'jOHNcENA123!',
         'HOST': 'localhost',
         'PORT': '5432',
     }

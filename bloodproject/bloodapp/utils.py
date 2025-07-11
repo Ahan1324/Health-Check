@@ -5,15 +5,11 @@ import os
 import json
 import re
 
+from .models import Marker, HealthCondition
 
-import re
-import json
-from openai import OpenAI
 
 def load_health_conditions_data():
-    file_path = os.path.join(settings.BASE_DIR, 'bloodapp', 'health_conditions.json')
-    with open(file_path, 'r') as f:
-        return json.load(f)
+    return {"health_conditions": list(HealthCondition.objects.all().values())}
 
 
 def get_risk_score_for_condition(prompt):
@@ -53,9 +49,8 @@ def safe_json_loads(content):
 def get_health_conditions_from_analysis(analysis_text):
     client = OpenAI(api_key = os.environ.get("OPENAI_API_KEY"))
 
-    health_conditions_data = load_health_conditions_data()["health_conditions"]
+    health_conditions_data = list(HealthCondition.objects.all().values())
     condition_ids = [c["condition_id"] for c in health_conditions_data]
-
 
     system_prompt = (
         "You are a medical reasoning assistant. "
