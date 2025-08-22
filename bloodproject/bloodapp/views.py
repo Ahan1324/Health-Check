@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 import json
 import os
@@ -12,6 +13,7 @@ import random
 import string
 import difflib
 import threading
+import time
 
 from .forms import SignUpForm, LoginForm, BloodTestForm
 from .models import Marker, HealthCondition, PatientProfile, AIAnalysisResult, RiskComputationTask
@@ -894,3 +896,25 @@ def treatment_plan_view(request):
     # Store in session for possible re-display
     request.session['treatment_plan'] = plan_json
     return render(request, 'bloodapp/treatment_plan.html', {'plan': plan_json})
+
+
+@csrf_exempt
+def health_check(request):
+    """Health check endpoint for Cloud Run"""
+    try:
+        # Check database connection
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+        
+        return JsonResponse({
+            'status': 'healthy',
+            'database': 'connected',
+            'timestamp': time.time()
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'unhealthy',
+            'error': str(e),
+            'timestamp': time.time()
+        }, status=500)

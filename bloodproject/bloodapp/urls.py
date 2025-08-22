@@ -28,5 +28,6 @@ urlpatterns = [
     path('api/risk/status/<str:task_id>/', views.api_risk_task_status, name='api_risk_task_status'),
     path('clear-session/', views.clear_session, name='clear_session'),
     path('treatment-plan/', views.treatment_plans_view, name='treatment_plan'),
+    path('health/', views.health_check, name='health_check'),
 ]
 
