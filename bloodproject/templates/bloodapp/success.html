@@ -3,29 +3,77 @@
 {% block title %}Analysis Results{% endblock %}
 
 {% block content %}
-<h1>Thank you, {{ patient }}!</h1>
-<h2>Your Analysis</h2>
-<pre style="white-space: pre-wrap;">{{ analysis }}</pre>
-
-<h2>Potential Health Conditions</h2>
-{% for cond in at_risk_conditions %}
-    <div class="card">
-        <h3>{{ cond.condition_id|title }}</h3>
-        <p><strong>Risk Level:</strong> {{ cond.level_of_risk }}</p>
-        <p>{{ cond.explanation }}</p>
-        {% if cond.detailed_analysis %}
-            <div>
-                <h4>Detailed Risk Analysis</h4>
-                <p><strong>Risk Score:</strong> {{ cond.risk_score }}/100</p>
-                <p>{{ cond.detailed_explanation }}</p>
+<style>
+.health-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+  vertical-align: middle;
+  fill: var(--sage-green);
+}
+@media (min-width: 768px) {
+  .conditions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+@media (max-width: 767px) {
+  .conditions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+</style>
+<div class="row justify-content-center">
+  <div class="col-lg-10 col-xl-8">
+    <div class="card shadow-sm border-0 mt-4 mb-4 fade-in">
+      <div class="card-body">
+        <h1 class="card-title mb-3" style="color: var(--sage-green); font-family: 'Playfair Display', serif;">Thank you, {{ patient }}!</h1>
+        <h2 class="mb-3" style="color: var(--subheading-color); font-family: 'Open Sans', sans-serif;">Your Personalized Analysis</h2>
+        <button class="btn btn-link p-0 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#personalized-analysis">Show/Hide Personalized Analysis</button>
+        <div class="collapse" id="personalized-analysis">
+          <pre class="p-3 rounded" style="background: #fafdff; border: 1px solid #e0ece7; white-space: pre-wrap; color: var(--heading-color); font-size: 1.1rem;">{{ analysis }}</pre>
+        </div>
+        <h2 class="mt-4 mb-3" style="color: var(--subheading-color); font-family: 'Open Sans', sans-serif;">Potential Health Conditions</h2>
+        <div class="conditions-grid">
+        {% for cond in at_risk_conditions %}
+          <div class="card mb-3 border-0 shadow-sm fade-in" style="background: #f6fbfa;">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex align-items-center mb-2">
+                <svg class="health-icon" viewBox="0 0 32 32"><ellipse cx="16" cy="16" rx="14" ry="14"/><path d="M16 8 Q22 16 16 24 Q10 16 16 8 Z" fill="#A8B5A2"/></svg>
+                <h3 class="card-title mb-0" style="color: var(--sage-green); font-family: 'Playfair Display', serif;">{{ cond.condition_id|title }}</h3>
+              </div>
+              <p class="mb-2"><strong>Risk Level:</strong> <span class="badge bg-warning text-dark">{{ cond.level_of_risk }}</span></p>
+              <p style="color: var(--body-color);">{{ cond.explanation|default:"Your results suggest a potential area for support—let’s work together to optimize your wellness." }}</p>
+              {% if cond.detailed_analysis %}
+                <div class="mt-2">
+                  <h4 style="color: var(--subheading-color); font-family: 'Open Sans', sans-serif;">Detailed Risk Analysis</h4>
+                  <button class="btn btn-link p-0 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#detailed-{{ forloop.counter }}">Show/Hide Detailed Analysis</button>
+                  <div class="collapse" id="detailed-{{ forloop.counter }}">
+                    <p><strong>Risk Score:</strong> <span class="badge bg-info text-dark">{{ cond.risk_score }}/100</span></p>
+                    <p style="color: var(--body-color);">{{ cond.detailed_explanation }}</p>
+                  </div>
+                </div>
+              {% else %}
+                <form action="{% url 'quiz_condition' cond.condition_id %}" method="get" class="mt-3">
+                  <button type="submit" class="btn btn-success w-100">Discover Your Health Insights</button>
+                </form>
+              {% endif %}
             </div>
-        {% else %}
-            <form action="{% url 'quiz_condition' cond.condition_id %}" method="get">
-                <button type="submit">Fill Symptom Quiz</button>
-            </form>
+          </div>
+        {% empty %}
+          <p class="text-muted">No significant risks detected. Your results look great—keep up the healthy habits!</p>
+        {% endfor %}
+        </div>
+        {% if at_risk_conditions and at_risk_conditions|length > 0 %}
+          <form action="{% url 'treatment_plan' %}" method="get">
+            <button type="submit" class="btn btn-success">Create Treatment Plan</button>
+          </form>
         {% endif %}
+      </div>
     </div>
-{% empty %}
-    <p>No significant risks detected.</p>
-{% endfor %}
+  </div>
+</div>
 {% endblock %}

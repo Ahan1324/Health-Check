@@ -1,0 +1,38 @@
+{% extends 'bloodapp/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Treatment Plan</h2>
+  <hr>
+  <h4>Nutrition</h4>
+  <ul>
+    {% for item in plan.Nutrition %}
+      <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  <h4>Lifestyle Changes</h4>
+  <ul>
+    {% for item in plan.Lifestyle %}
+      <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+  <h4>Supplements</h4>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Link</th>
+        <th>Regularity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for supp in plan.Supplements %}
+        <tr>
+          <td>{{ supp.name }}</td>
+          <td><a href="{{ supp.link }}" target="_blank">Link</a></td>
+          <td>{{ supp.regularity }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %} 

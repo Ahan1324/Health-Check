@@ -1,0 +1,181 @@
+{% extends "bloodapp/base.html" %}
+{% block title %}Submit Patient Info{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col-12">
+		<div class="card shadow-sm border-0 fade-in">
+			<div class="card-header bg-white border-0 pb-0">
+				<h2 class="card-title text-center mb-3" style="color: var(--sage-green);">
+					<i class="fas fa-user-plus me-2"></i>Submit Patient Information
+				</h2>
+				<p class="text-center text-muted mb-3">Enter your blood test results for each marker below or upload a PDF and auto-fill.</p>
+				<div class="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-3">
+					<div class="btn-group" role="group" aria-label="Default unit system">
+						<input type="radio" class="btn-check" name="defaultUnitToggle" id="defaultStd" autocomplete="off" {% if default_unit == 'standard' %}checked{% endif %}>
+						<label class="btn btn-outline-secondary" for="defaultStd">Default: Standard</label>
+						<input type="radio" class="btn-check" name="defaultUnitToggle" id="defaultIntl" autocomplete="off" {% if default_unit == 'international' %}checked{% endif %}>
+						<label class="btn btn-outline-secondary" for="defaultIntl">Default: International</label>
+					</div>
+					<button class="btn btn-outline-primary" id="applyDefaultUnits" type="button">
+						Apply default to all rows
+					</button>
+					<div class="d-flex align-items-center">
+						<input type="file" id="pdfInput" accept="application/pdf" class="form-control" style="max-width: 320px;">
+						<button class="btn btn-success ms-2" id="autoFillBtn" type="button">
+							<i class="fas fa-magic me-1"></i> Auto-fill from PDF
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="card-body p-3">
+				<form method="post" id="markersForm">
+					{% csrf_token %}
+					<input type="hidden" name="default_unit" id="defaultUnitInput" value="{{ default_unit }}">
+					<div class="table-responsive" style="max-height: 70vh; overflow:auto;">
+						<table class="table table-sm align-middle">
+							<thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+								<tr>
+									<th style="min-width: 260px;">Marker</th>
+									<th style="width: 180px;">Value</th>
+									<th style="width: 220px;">Units</th>
+									<th style="min-width: 260px;">Normal Range</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for m in markers %}
+								<tr data-marker-name="{{ m.name }}" data-marker-id="{{ m.id }}">
+									<td>
+										<div class="fw-semibold">{{ m.display_name }}</div>
+										<div class="text-muted small">({{ m.name }})</div>
+									</td>
+									<td>
+										<input type="number" step="any" class="form-control form-control-sm" name="marker_{{ m.id }}_value" placeholder="e.g. 12.3">
+									</td>
+									<td>
+										<select class="form-select form-select-sm unit-select" name="marker_{{ m.id }}_unit">
+											<option value="standard" {% if default_unit == 'standard' %}selected{% endif %}>Standard{% if m.standard_unit %} ({{ m.standard_unit }}){% endif %}</option>
+											<option value="international" {% if default_unit == 'international' %}selected{% endif %}>International{% if m.international_unit %} ({{ m.international_unit }}){% endif %}</option>
+										</select>
+									</td>
+									<td class="text-muted small">
+										<div class="range range-standard" {% if default_unit != 'standard' %}style="display:none;"{% endif %}>
+											Normal: {{ m.standard_min_conventional }} – {{ m.standard_max_conventional }}
+										</div>
+										<div class="range range-international" {% if default_unit != 'international' %}style="display:none;"{% endif %}>
+											Normal: {{ m.standard_min_international }} – {{ m.standard_max_international }}
+										</div>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<div class="text-center mt-3">
+						<button type="submit" class="btn btn-success btn-lg px-5">
+							<i class="fas fa-arrow-right me-2"></i>Submit & Continue
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.table thead th { font-weight: 700; }
+.table tbody td { vertical-align: middle; }
+.form-control, .form-select { font-size: 0.9rem; }
+</style>
+
+<script>
+(function(){
+	const form = document.getElementById('markersForm');
+	const defaultStd = document.getElementById('defaultStd');
+	const defaultIntl = document.getElementById('defaultIntl');
+	const defaultUnitInput = document.getElementById('defaultUnitInput');
+	const applyDefaultBtn = document.getElementById('applyDefaultUnits');
+	const pdfInput = document.getElementById('pdfInput');
+	const autoFillBtn = document.getElementById('autoFillBtn');
+
+	function currentDefault(){
+		return defaultIntl.checked ? 'international' : 'standard';
+	}
+
+	function updateRangesVisibility(){
+		const isIntl = currentDefault() === 'international';
+		document.querySelectorAll('.range-standard').forEach(el=>{ el.style.display = isIntl ? 'none':'block'; });
+		document.querySelectorAll('.range-international').forEach(el=>{ el.style.display = isIntl ? 'block':'none'; });
+	}
+
+	defaultStd.addEventListener('change', ()=>{
+		defaultUnitInput.value = currentDefault();
+		updateRangesVisibility();
+	});
+	defaultIntl.addEventListener('change', ()=>{
+		defaultUnitInput.value = currentDefault();
+		updateRangesVisibility();
+	});
+
+	applyDefaultBtn.addEventListener('click', ()=>{
+		const def = currentDefault();
+		document.querySelectorAll('select.unit-select').forEach(sel=>{
+			sel.value = def;
+		});
+	});
+
+	function getCsrfToken(){
+		const el = document.querySelector('input[name="csrfmiddlewaretoken"]');
+		return el ? el.value : '';
+	}
+
+	autoFillBtn.addEventListener('click', async ()=>{
+		if(!pdfInput.files || !pdfInput.files[0]){
+			alert('Please choose a PDF first.');
+			return;
+		}
+		const fd = new FormData();
+		fd.append('pdf', pdfInput.files[0]);
+		try{
+			const resp = await fetchWithLoading('{% url "parse_pdf_markers" %}', {
+				method: 'POST',
+				headers: { 'X-CSRFToken': getCsrfToken() },
+				body: fd
+			}, 'Reading your PDF…');
+			if(!resp.ok){
+				const txt = await resp.text();
+				throw new Error(txt || 'Failed to parse PDF');
+			}
+			const data = await resp.json();
+			if(!data.mappings){
+				alert('No mappings returned.');
+				return;
+			}
+			// Apply values
+			data.mappings.forEach(m=>{
+				const row = document.querySelector(`tr[data-marker-name="${CSS.escape(m.name)}"]`);
+				if(!row) return;
+				const id = row.getAttribute('data-marker-id');
+				const valInput = row.querySelector(`input[name="marker_${id}_value"]`);
+				const unitSel = row.querySelector(`select[name="marker_${id}_unit"]`);
+				if(valInput && typeof m.value !== 'undefined'){
+					valInput.value = m.value;
+				}
+				if(unitSel && m.unit_system){
+					unitSel.value = m.unit_system === 'international' ? 'international' : 'standard';
+				}
+			});
+			alert('Auto-fill complete. Please review and submit.');
+		}catch(err){
+			alert('Error: ' + err.message);
+		}
+	});
+
+	// Show overlay on submit navigation
+	form.addEventListener('submit', function(){
+		window.showGlobalLoading('Analyzing your markers…');
+	});
+
+	updateRangesVisibility();
+})();
+</script>
+{% endblock %} 

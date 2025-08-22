@@ -7,7 +7,7 @@
       "differential_diagnoses": ["anemia of chronic disease", "thalassemia"],
       "causes": ["chronic blood loss", "poor dietary intake", "malabsorption"],
       "diseases": ["microcytic anemia"],
-      "treatment": "Iron supplementation and addressing underlying cause of blood loss.",
+      "treatment": "Addressing iron deficiency anemia involves correcting the root cause—typically poor absorption, blood loss, or low dietary intake—while supporting healthy red blood cell production. The foundation should be an iron-rich diet including grass-fed red meat, organ meats (especially liver), lentils, pumpkin seeds, spinach (cooked), and blackstrap molasses, paired with vitamin C sources (like citrus or bell peppers) to enhance absorption. Avoid pairing iron with calcium or coffee/tea, which inhibit uptake. Supplement with highly bioavailable forms like iron bisglycinate (25–65 mg/day), monitored to avoid overload. Investigate and treat causes like heavy menstruation, gut inflammation (e.g., H. pylori, celiac), or occult blood loss. Include probiotics and digestive enzymes if absorption is poor. Lifestyle practices include reducing stress and getting moderate exercise to improve blood oxygenation and circulation.",
       "associated_markers_low": [
         {"marker": "Ferritin", "explanation": "Decreases early in iron deficiency."}
       ],
@@ -22,7 +22,7 @@
       "differential_diagnoses": ["depression", "anemia"],
       "causes": ["Hashimoto's thyroiditis", "iodine deficiency"],
       "diseases": ["primary hypothyroidism"],
-      "treatment": "Levothyroxine replacement therapy.",
+      "treatment": "A functional approach to hypothyroidism focuses on reducing autoimmune triggers, supporting thyroid hormone production, and optimizing conversion of T4 to active T3. Adopt a gluten-free, anti-inflammatory diet with sufficient selenium (Brazil nuts, 1–2 per day), iodine (sea vegetables in moderation), zinc (shellfish, pumpkin seeds), and tyrosine (eggs, poultry, almonds). Avoid goitrogens in raw cruciferous vegetables unless well-cooked. Test for and treat Hashimoto’s if antibodies are present; consider low-dose naltrexone (LDN) under supervision. Address adrenal health through stress-reducing practices like yoga, morning sun exposure, and proper sleep hygiene. Supplements may include selenium (100–200 mcg), zinc (15–30 mg), vitamin D (if deficient), adaptogens (like ashwagandha), and omega-3s to reduce inflammation. Periodic thyroid function testing is essential to track progress and medication needs.",
       "associated_markers_low": [],
       "associated_markers_high": [
         {"marker": "TSH", "explanation": "Pituitary raises TSH to stimulate thyroid."},
@@ -36,7 +36,7 @@
       "differential_diagnoses": ["autoimmune conditions", "infection"],
       "causes": ["obesity", "chronic infections", "autoimmune diseases"],
       "diseases": ["rheumatoid arthritis", "SLE"],
-      "treatment": "Managing underlying cause and lifestyle changes.",
+      "treatment": "Chronic inflammation is best addressed by eliminating sources of immune activation, repairing gut integrity, and increasing intake of anti-inflammatory compounds. Begin with a whole-food, Mediterranean-style diet rich in leafy greens, berries, olive oil, turmeric, ginger, wild-caught fish, and nuts while avoiding refined carbs, seed oils, gluten, dairy (if reactive), and processed meats. Prioritize sleep (7–9 hours), manage stress via meditation or breathing exercises, and get regular movement like walking or resistance training. Identify and eliminate infections, toxins, or food sensitivities contributing to immune overactivation. Supplement with omega-3 fatty acids (EPA/DHA ~2 g/day), curcumin with black pepper, magnesium glycinate (200–400 mg/day), and a high-quality probiotic. Periodically monitor CRP or homocysteine levels to assess inflammation status.",
       "associated_markers_low": [],
       "associated_markers_high": [
         {"marker": "CRP", "explanation": "Rises in response to inflammatory cytokines."},
@@ -50,7 +50,7 @@
       "differential_diagnoses": ["hyperparathyroidism", "osteomalacia"],
       "causes": ["lack of sun exposure", "poor dietary intake", "malabsorption"],
       "diseases": ["osteoporosis", "rickets"],
-      "treatment": "Vitamin D supplementation and sun exposure.",
+      "treatment": "Correcting vitamin D deficiency requires safe sun exposure (10–20 minutes on face and arms midday, without sunscreen), dietary sources (egg yolks, fatty fish, mushrooms), and supplementation with D3 (cholecalciferol). A typical therapeutic dose is 5,000 IU/day of D3 with vitamin K2 (MK-7, 100–200 mcg/day) to guide calcium to bones rather than arteries. Co-factors like magnesium (especially citrate or glycinate, 200–400 mg/day), zinc, and boron support optimal utilization. Test serum 25(OH)D levels and aim for 50–70 ng/mL. Improve gut health to enhance absorption and avoid antacids or proton pump inhibitors if possible. A healthy circadian rhythm, daily movement, and low-toxicity lifestyle all indirectly support healthy vitamin D metabolism and immune regulation.",
       "associated_markers_low": [
         {"marker": "Vitamin D", "explanation": "Direct measure of vitamin D status."}
       ],
@@ -65,7 +65,7 @@
       "differential_diagnoses": ["type 1 diabetes", "Cushing's syndrome"],
       "causes": ["obesity", "genetic predisposition", "sedentary lifestyle"],
       "diseases": ["metabolic syndrome"],
-      "treatment": "Lifestyle modification, oral hypoglycemics, and sometimes insulin.",
+      "treatment": "A root-cause approach to type 2 diabetes emphasizes reversing insulin resistance, stabilizing blood glucose, and restoring metabolic flexibility through diet, exercise, and targeted supplements. Begin with a whole-food, low-glycemic diet that includes non-starchy vegetables, clean proteins (fish, pasture-raised meats), healthy fats (avocado, nuts, olive oil), and limited whole carbs like legumes or quinoa based on glucose tolerance. Avoid refined grains, sugars, and ultra-processed foods. Engage in daily movement, with a mix of resistance training and aerobic exercise to improve insulin sensitivity. Implement time-restricted eating (e.g., 14:10) to enhance metabolic repair. Support with supplements like berberine (500 mg 2–3x/day), alpha-lipoic acid (300–600 mg/day), magnesium (300–400 mg), chromium (200 mcg), and cinnamon extract. Regularly track HbA1c, fasting glucose, and insulin, and consider continuous glucose monitoring (CGM) if feasible. Prioritize sleep, manage stress, and repair gut dysbiosis to reduce systemic insulin resistance.",
       "associated_markers_low": [],
       "associated_markers_high": [
         {"marker": "HbA1c", "explanation": "Reflects chronic hyperglycemia."},

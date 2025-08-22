@@ -1,0 +1,79 @@
+{% extends "bloodapp/base.html" %}
+{% block title %}Patient Info Completed{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 fade-in">
+            <div class="card-header bg-white border-0 pb-0">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="card-title mb-2" style="color: var(--sage-green);">
+                        Patient Information Submitted
+                    </h2>
+                    <p class="text-muted mb-0">Your blood test results have been successfully analyzed.</p>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="fw-semibold mb-3">
+                            <i class="fas fa-user me-2"></i>Patient Details
+                        </h5>
+                        <p><strong>Name:</strong> {{ ai_result.patient_name }}</p>
+                        <p><strong>Analysis Date:</strong> {{ ai_result.analysis_report|slice:":10" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="fw-semibold mb-3">
+                            <i class="fas fa-chart-line me-2"></i>Analysis Summary
+                        </h5>
+                        <p><strong>Markers Analyzed:</strong> {{ ai_result.patient_data|length|add:"-1" }}</p>
+                        <p><strong>Status:</strong> <span class="badge bg-success">Complete</span></p>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-info-circle me-2"></i>What's Next?
+                    </h6>
+                    <p class="mb-0">Your blood test results have been processed. Click the button below to view AI-generated health concerns and recommendations.</p>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{% url 'health_concerns' %}" class="btn btn-success btn-lg px-5">
+                        <i class="fas fa-arrow-right me-2"></i>View Health Concerns
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    border: none;
+    border-radius: 8px;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--sage-green) 0%, var(--sage-green-dark) 100%);
+    border: none;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(122, 139, 111, 0.3);
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,292 @@
+{% extends "bloodapp/base.html" %}
+{% block title %}Analysis Complete{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-sm border-0 fade-in">
+            <div class="card-header bg-white border-0 pb-0">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-trophy text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h2 class="card-title mb-2" style="color: var(--sage-green);">
+                        Analysis Complete!
+                    </h2>
+                    <p class="text-muted mb-0">Your comprehensive health analysis is ready. Here's a summary of your results.</p>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <!-- Patient Summary -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-light border-0">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-user me-2 text-primary"></i>Patient Summary
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Name:</strong> {{ patient_name }}</p>
+                                <p><strong>Markers Analyzed:</strong> {{ patient_info.patient_values|length }}</p>
+                                <p><strong>Analysis Date:</strong> {{ analysis_date|date:"Y-m-d" }}</p>
+                                <p><strong>Status:</strong> <span class="badge bg-success">Complete</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-light border-0">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-line me-2 text-success"></i>Health Overview
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                {% if health_concerns.likely_conditions %}
+                                    <p><strong>Health Concerns Identified:</strong> {{ health_concerns.likely_conditions|length }}</p>
+                                    <p><strong>Risk Level:</strong> 
+                                        {% if health_concerns.likely_conditions|length > 3 %}
+                                            <span class="badge bg-warning">Moderate</span>
+                                        {% elif health_concerns.likely_conditions|length > 1 %}
+                                            <span class="badge bg-info">Low</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Minimal</span>
+                                        {% endif %}
+                                    </p>
+                                {% else %}
+                                    <p><strong>Health Status:</strong> <span class="badge bg-success">Excellent</span></p>
+                                    <p><strong>Concerns:</strong> <span class="text-success">None identified</span></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Concerns Summary -->
+                {% if health_concerns.likely_conditions %}
+                    <div class="mb-4">
+                        <h4 class="fw-semibold mb-3">
+                            <i class="fas fa-exclamation-triangle me-2 text-warning"></i>Health Concerns Summary
+                        </h4>
+                        <div class="row">
+                            {% for condition in health_concerns.likely_conditions|slice:":3" %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body text-center">
+                                            {% if condition.display_name %}
+                                                <h6 class="card-title text-warning">{{ condition.display_name }}</h6>
+                                            {% elif condition.name %}
+                                                <h6 class="card-title text-warning">{{ condition.name }}</h6>
+                                            {% elif condition.condition_id %}
+                                                <h6 class="card-title text-warning">{{ condition.condition_id }}</h6>
+                                            {% else %}
+                                                <h6 class="card-title text-warning">Health Concern</h6>
+                                            {% endif %}
+
+                                            {% if condition.risk_score %}
+                                                <div class="progress mb-2" style="height: 6px;">
+                                                    {% if condition.risk_score > 70 %}
+                                                        <div class="progress-bar bg-success w-75"></div>
+                                                    {% elif condition.risk_score > 40 %}
+                                                        <div class="progress-bar bg-warning w-50"></div>
+                                                    {% elif condition.risk_score > 0 %}
+                                                        <div class="progress-bar bg-info w-25"></div>
+                                                    {% else %}
+                                                        <div class="progress-bar bg-info w-25"></div>
+                                                    {% endif %}
+                                                </div>
+                                                <small class="text-muted">Risk score: {{ condition.risk_score }}%</small>
+                                            {% elif condition.level_of_risk %}
+                                                <span class="badge bg-warning text-dark">{{ condition.level_of_risk }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if health_concerns.likely_conditions|length > 3 %}
+                            <p class="text-center text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Showing top 3 concerns. View all details in the Health Concerns section.
+                            </p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- Treatment Plan Summary -->
+                {% if treatment_plans.treatment_plan %}
+                    <div class="mb-4">
+                        <h4 class="fw-semibold mb-3">
+                            <i class="fas fa-pills me-2 text-primary"></i>Treatment Plan Summary
+                        </h4>
+                        <div class="row">
+                            {% if treatment_plans.treatment_plan.lifestyle_recommendations %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-heart text-success mb-2" style="font-size: 2rem;"></i>
+                                            <h6 class="card-title">Lifestyle Changes</h6>
+                                            <p class="text-muted mb-0">{{ treatment_plans.treatment_plan.lifestyle_recommendations|length }} recommendations</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if treatment_plans.treatment_plan.supplement_recommendations %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-capsules text-primary mb-2" style="font-size: 2rem;"></i>
+                                            <h6 class="card-title">Supplements</h6>
+                                            <p class="text-muted mb-0">{{ treatment_plans.treatment_plan.supplement_recommendations|length }} recommendations</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if treatment_plans.treatment_plan.dietary_recommendations %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-utensils text-warning mb-2" style="font-size: 2rem;"></i>
+                                            <h6 class="card-title">Dietary Changes</h6>
+                                            <p class="text-muted mb-0">{{ treatment_plans.treatment_plan.dietary_recommendations|length }} recommendations</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Next Steps -->
+                <div class="alert alert-success">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-lightbulb me-2"></i>Next Steps
+                    </h6>
+                    <ul class="mb-0">
+                        <li>Review your detailed health concerns and treatment recommendations</li>
+                        <li>Consult with your healthcare provider about the findings</li>
+                        <li>Implement the suggested lifestyle and dietary changes</li>
+                        <li>Schedule follow-up blood tests as recommended</li>
+                        <li>Track your progress and improvements over time</li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'patient_info' %}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-user me-2"></i>View Patient Info
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'health_concerns' %}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-stethoscope me-2"></i>View Health Concerns
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'treatment_plans' %}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-pills me-2"></i>View Treatment Plans
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Download Report -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'report' %}" class="btn btn-success btn-lg px-5" target="_blank" rel="noopener">
+                        <i class="fas fa-download me-2"></i>Download Report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+.progress {
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+.progress-bar {
+    border-radius: 10px;
+}
+
+.badge {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: none;
+    border-radius: 12px;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--sage-green) 0%, var(--sage-green-dark) 100%);
+    border: none;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(168, 181, 162, 0.3);
+}
+
+.text-primary {
+    color: var(--sage-green) !important;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.progress {
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.progress-bar {
+    border-radius: 8px;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d1e7dd 0%, #badbcc 100%);
+    border: none;
+    border-radius: 8px;
+}
+
+@media print {
+    .sidebar, .navbar, .footer, .btn {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #dee2e6 !important;
+    }
+}
+</style>
+{% endblock %} 

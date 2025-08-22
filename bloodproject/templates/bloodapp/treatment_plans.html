@@ -1,0 +1,218 @@
+{% extends "bloodapp/base.html" %}
+{% block title %}Treatment Plans{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-sm border-0 fade-in">
+            <div class="card-header bg-white border-0 pb-0">
+                <div class="text-center">
+                    <h2 class="card-title mb-2" style="color: var(--sage-green);">
+                        <i class="fas fa-pills me-2"></i>Personalized Treatment Plan
+                    </h2>
+                    <p class="text-muted mb-0">Based on your health analysis, here are your personalized recommendations and treatment options.</p>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                {% if ai_result.treatment_plan %}
+                    {% if ai_result.treatment_plan.error %}
+                        <div class="alert alert-warning">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Analysis in Progress
+                            </h6>
+                            <p class="mb-0">We're currently generating your personalized treatment plan. Please check back in a few moments.</p>
+                        </div>
+                    {% else %}
+                        <!-- Lifestyle Recommendations -->
+                        {% if ai_result.treatment_plan.lifestyle_recommendations %}
+                            <div class="mb-4">
+                                <h4 class="fw-semibold mb-3">
+                                    <i class="fas fa-heart me-2 text-success"></i>Lifestyle Recommendations
+                                </h4>
+                                <div class="row">
+                                    {% for rec in ai_result.treatment_plan.lifestyle_recommendations %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card border-0 shadow-sm h-100">
+                                                <div class="card-body">
+                                                    <h6 class="card-title text-success">
+                                                        <i class="fas fa-check-circle me-2"></i>{{ rec.title|default:"Recommendation" }}
+                                                    </h6>
+                                                    <p class="card-text text-muted mb-0">{{ rec.description|default:rec }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Supplement Recommendations -->
+                        {% if ai_result.treatment_plan.supplement_recommendations %}
+                            <div class="mb-4">
+                                <h4 class="fw-semibold mb-3">
+                                    <i class="fas fa-capsules me-2 text-primary"></i>Supplement Recommendations
+                                </h4>
+                                <div class="row">
+                                    {% for supp in ai_result.treatment_plan.supplement_recommendations %}
+                                        <div class="col-lg-4 col-md-6 mb-3">
+                                            <div class="card border-0 shadow-sm h-100">
+                                                <div class="card-body">
+                                                    <h6 class="card-title text-primary">
+                                                        <i class="fas fa-pills me-2"></i>{{ supp.name|default:"Supplement" }}
+                                                    </h6>
+                                                    {% if supp.dosage %}
+                                                        <p class="text-muted mb-2"><strong>Dosage:</strong> {{ supp.dosage }}</p>
+                                                    {% endif %}
+                                                    {% if supp.reasoning %}
+                                                        <p class="card-text text-muted mb-0">{{ supp.reasoning }}</p>
+                                                    {% endif %}
+                                                    {% if supp.link %}
+                                                        <a href="{{ supp.link }}" target="_blank" class="btn btn-outline-primary btn-sm mt-2">
+                                                            <i class="fas fa-external-link-alt me-1"></i>Learn More
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Dietary Recommendations -->
+                        {% if ai_result.treatment_plan.dietary_recommendations %}
+                            <div class="mb-4">
+                                <h4 class="fw-semibold mb-3">
+                                    <i class="fas fa-utensils me-2 text-warning"></i>Dietary Recommendations
+                                </h4>
+                                <div class="row">
+                                    {% for diet in ai_result.treatment_plan.dietary_recommendations %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card border-0 shadow-sm h-100">
+                                                <div class="card-body">
+                                                    <h6 class="card-title text-warning">
+                                                        <i class="fas fa-apple-alt me-2"></i>{{ diet.title|default:"Dietary Change" }}
+                                                    </h6>
+                                                    <p class="card-text text-muted mb-0">{{ diet.description|default:diet }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Follow-up Recommendations -->
+                        {% if ai_result.treatment_plan.follow_up_recommendations %}
+                            <div class="mb-4">
+                                <h4 class="fw-semibold mb-3">
+                                    <i class="fas fa-calendar-check me-2 text-info"></i>Follow-up Recommendations
+                                </h4>
+                                <div class="row">
+                                    {% for follow in ai_result.treatment_plan.follow_up_recommendations %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card border-0 shadow-sm h-100">
+                                                <div class="card-body">
+                                                    <h6 class="card-title text-info">
+                                                        <i class="fas fa-clock me-2"></i>{{ follow.title|default:"Follow-up" }}
+                                                    </h6>
+                                                    <p class="card-text text-muted mb-0">{{ follow.description|default:follow }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Summary -->
+                        {% if ai_result.treatment_plan.summary %}
+                            <div class="alert alert-success">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-lightbulb me-2"></i>Treatment Summary
+                                </h6>
+                                <p class="mb-0">{{ ai_result.treatment_plan.summary }}</p>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-spinner fa-spin text-primary" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3">Generating Your Treatment Plan</h4>
+                        <p class="text-muted">Our AI is analyzing your health data to create personalized recommendations.</p>
+                    </div>
+                {% endif %}
+
+                <div class="alert alert-info mt-4">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-info-circle me-2"></i>Important Disclaimer
+                    </h6>
+                    <p class="mb-0">These recommendations are for informational purposes only. Always consult with your healthcare provider before starting any new supplements or making significant lifestyle changes.</p>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{% url 'completed' %}" class="btn btn-success btn-lg px-5">
+                        <i class="fas fa-check-circle me-2"></i>Complete Analysis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: none;
+    border-radius: 12px;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: none;
+    border-radius: 12px;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--sage-green) 0%, var(--sage-green-dark) 100%);
+    border: none;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(168, 181, 162, 0.3);
+}
+
+.text-primary {
+    color: var(--sage-green) !important;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d1e7dd 0%, #badbcc 100%);
+    border: none;
+    border-radius: 8px;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    border: none;
+    border-radius: 8px;
+}
+</style>
+{% endblock %} 

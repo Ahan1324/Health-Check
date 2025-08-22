@@ -1,5 +1,145 @@
 {% extends "bloodapp/base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<h2>Welcome to the Blood App Home Page!</h2>
+<style>
+.hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 380px;
+  background: linear-gradient(120deg, rgba(168,181,162,0.85) 0%, rgba(245,247,246,0.85) 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  overflow: hidden;
+}
+.hero-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.18);
+  z-index: 1;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  padding: 3rem 2rem;
+  width: 100%;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.7rem;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 8px rgba(44,62,80,0.12);
+}
+.hero-tagline {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.3rem;
+  color: #F5F7F6;
+  margin-bottom: 2rem;
+  text-shadow: 0 1px 4px rgba(44,62,80,0.10);
+}
+.hero-btn {
+  background: var(--sage-green);
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.75rem 2.5rem;
+  border: none;
+  box-shadow: 0 2px 8px rgba(168,181,162,0.10);
+  transition: background 0.2s, transform 0.2s;
+}
+.hero-btn:hover {
+  background: var(--sage-green-dark);
+  color: #fff;
+  transform: scale(1.05);
+}
+</style>
+
+{% if user.is_authenticated %}
+    <!-- Authenticated User - Show Progress -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 fade-in">
+                <div class="card-header bg-white border-0 pb-0">
+                    <div class="text-center">
+                        <h2 class="card-title mb-2" style="color: var(--sage-green);">
+                            <i class="fas fa-chart-line me-2"></i>Welcome Back, {{ user.username }}!
+                        </h2>
+                        <p class="text-muted mb-0">Continue your health journey where you left off.</p>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    {% with current_stage=user.patientprofile.current_stage %}
+                        {% if current_stage == 'patient_info' %}
+                            <div class="text-center">
+                                <i class="fas fa-user-plus text-primary mb-3" style="font-size: 3rem;"></i>
+                                <h4 class="mb-3">Ready to Start Your Analysis</h4>
+                                <p class="text-muted mb-4">Begin by submitting your blood test results for AI-powered health analysis.</p>
+                                <a href="{% url 'patient_info' %}" class="btn btn-success btn-lg px-5">
+                                    <i class="fas fa-arrow-right me-2"></i>Start Analysis
+                                </a>
+                            </div>
+                        {% elif current_stage == 'health_concerns' %}
+                            <div class="text-center">
+                                <i class="fas fa-stethoscope text-warning mb-3" style="font-size: 3rem;"></i>
+                                <h4 class="mb-3">Health Analysis Ready</h4>
+                                <p class="text-muted mb-4">Your blood test results have been analyzed. View your personalized health insights.</p>
+                                <a href="{% url 'health_concerns' %}" class="btn btn-warning btn-lg px-5">
+                                    <i class="fas fa-arrow-right me-2"></i>View Health Concerns
+                                </a>
+                            </div>
+                        {% elif current_stage == 'treatment_plans' %}
+                            <div class="text-center">
+                                <i class="fas fa-pills text-success mb-3" style="font-size: 3rem;"></i>
+                                <h4 class="mb-3">Treatment Plan Ready</h4>
+                                <p class="text-muted mb-4">Your personalized treatment recommendations are ready for review.</p>
+                                <a href="{% url 'treatment_plans' %}" class="btn btn-success btn-lg px-5">
+                                    <i class="fas fa-arrow-right me-2"></i>View Treatment Plans
+                                </a>
+                            </div>
+                        {% elif current_stage == 'completed' %}
+                            <div class="text-center">
+                                <i class="fas fa-trophy text-warning mb-3" style="font-size: 3rem;"></i>
+                                <h4 class="mb-3">Analysis Complete!</h4>
+                                <p class="text-muted mb-4">Your comprehensive health analysis is complete. Review your results and recommendations.</p>
+                                <a href="{% url 'completed' %}" class="btn btn-success btn-lg px-5">
+                                    <i class="fas fa-check-circle me-2"></i>View Complete Analysis
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <!-- Non-authenticated User - Show Hero -->
+<div class="hero-section fade-in">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">Your Path to Longevity and Wellness</h1>
+    <div class="hero-tagline">Empowering your health journey with advanced blood analysis and personalized insights.</div>
+            <a href="{% url 'signup' %}" class="btn hero-btn">Start Your Wellness Journey</a>
+  </div>
+</div>
+    
+<div class="row justify-content-center align-items-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm border-0 p-4 fade-in" style="background: #fafdff;">
+      <div class="card-body text-center">
+        <h2 class="card-title mb-3" style="color: var(--sage-green); font-family: 'Playfair Display', serif;">Welcome to Longevity Lab</h2>
+        <p class="card-text" style="color: var(--body-color); font-size: 1.1rem;">Experience a new era of functional medicine—where your wellness, vitality, and longevity are our highest priorities.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
 {% endblock %} 

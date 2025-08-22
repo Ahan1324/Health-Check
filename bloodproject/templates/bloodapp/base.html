@@ -1,20 +1,543 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Blood App{% endblock %}</title>
+    <!-- Google Fonts: Playfair Display & Open Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --sage-green: #7A8B6F;
+            --sage-green-dark: #6B7A5F;
+            --soft-white: #F8F9FA;
+            --light-gray: #E9ECEF;
+            --pale-blue: #4A90E2;
+            --muted-gold: #B8860B;
+            --heading-color: #2C3E50;
+            --subheading-color: #34495E;
+            --body-color: #495057;
+            --sidebar-width: 280px;
+        }
+        html, body {
+            background: var(--soft-white);
+            font-family: 'Open Sans', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--body-color);
+        }
+        h1, h2, h3, h4, h5, h6, .navbar-brand, .logo-text {
+            font-family: 'Open Sans', Arial, sans-serif;
+            color: var(--heading-color);
+            font-weight: 600;
+        }
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.75rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+        h5 { font-size: 1.1rem; }
+        h6 { font-size: 1rem; }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--sage-green) 0%, var(--sage-green-dark) 100%);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1001;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-header {
+            padding: 2rem 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+        }
+        
+        .sidebar-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-brand i {
+            margin-right: 0.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .sidebar-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .nav-step {
+            padding: 1rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-step:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-step.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-left-color: var(--muted-gold);
+        }
+        
+        .nav-step.completed {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: #28a745;
+        }
+        
+        .nav-step.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .nav-step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .nav-step.active .nav-step-icon {
+            background: var(--muted-gold);
+        }
+        
+        .nav-step.completed .nav-step-icon {
+            background: #28a745;
+        }
+        
+        .nav-step-content {
+            flex: 1;
+        }
+        
+        .nav-step-title {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            font-size: 0.95rem;
+        }
+        
+        .nav-step-description {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .nav-step-number {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .nav-step.active .nav-step-number {
+            background: var(--muted-gold);
+        }
+        
+        .nav-step.completed .nav-step-number {
+            background: #28a745;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background: var(--light-gray);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--sage-green) !important;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            margin-right: 8px;
+            fill: var(--muted-gold);
+        }
+        
+        .nav-link, .nav-item .btn {
+            font-family: 'Open Sans', Arial, sans-serif;
+            font-weight: 600;
+            color: var(--subheading-color) !important;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        
+        .nav-link:hover, .nav-item .btn:hover {
+            background: var(--sage-green);
+            color: #fff !important;
+            transform: scale(1.05);
+        }
+        
+        .btn-success, .btn-outline-success {
+            background: var(--sage-green);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.2s;
+        }
+        
+        .btn-success:hover, .btn-outline-success:hover {
+            background: var(--sage-green-dark);
+            color: #fff;
+            transform: scale(1.05);
+        }
+        
+        .footer {
+            background: var(--light-gray);
+            color: var(--subheading-color);
+            text-align: center;
+            padding: 1.5rem 0 1rem 0;
+            margin-top: auto;
+            font-size: 1rem;
+        }
+        
+        .footer .logo-text {
+            font-size: 1.2rem;
+            color: var(--sage-green);
+            font-weight: 700;
+        }
+        
+        .footer .footer-links a {
+            color: var(--subheading-color);
+            margin: 0 0.5rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer .footer-links a:hover {
+            color: var(--sage-green);
+        }
+        
+        .card, .form-control, .table {
+            border-radius: 8px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .form-control:focus {
+            border-color: var(--pale-blue);
+            box-shadow: 0 0 0 0.2rem rgba(179,229,252,0.25);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: none; }
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar-toggle {
+                display: block !important;
+            }
+        }
+        
+        .sidebar-toggle {
+            display: none;
+            background: var(--sage-green);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <a href="{% url 'home' %}">Home</a>
-        {% if user.is_authenticated %}
-            <span>Welcome, {{ user.username }}!</span>
-            <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'signup' %}">Sign Up</a>
-        {% endif %}
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'home' %}" class="sidebar-brand">
+                <i class="fas fa-heartbeat"></i>
+                Longevity Lab
+            </a>
+            <p class="sidebar-subtitle">Wellness Through Insight</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            {% if user.is_authenticated %}
+                {% with current_stage=user.patientprofile.current_stage %}
+                    <a href="{% url 'patient_info' %}" class="nav-step {% if current_stage == 'patient_info' %}active{% elif current_stage in 'health_concerns,treatment_plans,completed' %}completed{% endif %}">
+                        <div class="nav-step-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="nav-step-content">
+                            <div class="nav-step-title">Submit Patient Info</div>
+                            <div class="nav-step-description">Enter your blood test results</div>
+                        </div>
+                        <div class="nav-step-number">1</div>
+                    </a>
+                    
+                    <a href="{% url 'health_concerns' %}" class="nav-step {% if current_stage == 'health_concerns' %}active{% elif current_stage in 'treatment_plans,completed' %}completed{% elif current_stage == 'patient_info' %}disabled{% endif %}">
+                        <div class="nav-step-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="nav-step-content">
+                            <div class="nav-step-title">View Health Concerns</div>
+                            <div class="nav-step-description">AI analysis of your results</div>
+                        </div>
+                        <div class="nav-step-number">2</div>
+                    </a>
+                    
+                    <a href="{% url 'treatment_plans' %}" class="nav-step {% if current_stage == 'treatment_plans' %}active{% elif current_stage == 'completed' %}completed{% elif current_stage in 'patient_info,health_concerns' %}disabled{% endif %}">
+                        <div class="nav-step-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="nav-step-content">
+                            <div class="nav-step-title">View Treatment Plans</div>
+                            <div class="nav-step-description">Personalized recommendations</div>
+                        </div>
+                        <div class="nav-step-number">3</div>
+                    </a>
+                    
+                    <a href="{% url 'completed' %}" class="nav-step {% if current_stage == 'completed' %}active{% elif current_stage in 'patient_info,health_concerns,treatment_plans' %}disabled{% endif %}">
+                        <div class="nav-step-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="nav-step-content">
+                            <div class="nav-step-title">Completed</div>
+                            <div class="nav-step-description">Review your full analysis</div>
+                        </div>
+                        <div class="nav-step-number">4</div>
+                    </a>
+                {% endwith %}
+            {% endif %}
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+    <nav class="navbar navbar-expand-lg navbar-light mb-4">
+      <div class="container">
+                <button class="sidebar-toggle me-3" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <svg class="logo-icon" viewBox="0 0 32 32"><ellipse cx="16" cy="16" rx="14" ry="14"/><path d="M16 6 Q20 16 16 26 Q12 16 16 6 Z" fill="#A8B5A2"/></svg>
+          <span class="logo-text">Longevity Lab</span>
+        </a>
+                
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+                
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <span class="nav-link">Welcome, {{ user.username }}!</span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
     </nav>
-    <hr>
-    {% block content %}{% endblock %}
+        
+    <main class="container mb-5">
+        {% block content %}{% endblock %}
+    </main>
+        
+    <footer class="footer">
+        <div class="container">
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <div class="d-flex align-items-center mb-2 mb-md-0">
+                    <svg class="logo-icon" viewBox="0 0 32 32"><ellipse cx="16" cy="16" rx="14" ry="14"/><path d="M16 6 Q20 16 16 26 Q12 16 16 6 Z" fill="#A8B5A2"/></svg>
+                    <span class="logo-text ms-2">Longevity Lab</span>
+                </div>
+                <div class="footer-links mb-2 mb-md-0">
+                    <a href="#">Contact</a>
+                    <a href="#">Instagram</a>
+                    <a href="#">LinkedIn</a>
+                </div>
+                <span>© {{ now|date:'Y' }} Longevity Lab &mdash; Wellness Through Insight</span>
+            </div>
+        </div>
+    </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Global Loading Overlay -->
+    <style>
+        .global-loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(2px);
+        }
+        .global-loading-overlay.show { display: flex; }
+        .spinner-dot {
+            width: 12px; height: 12px; margin: 4px;
+            background: var(--sage-green);
+            border-radius: 50%;
+            animation: bounce 0.9s infinite alternate;
+        }
+        .spinner-dot:nth-child(2) { animation-delay: 0.15s; }
+        .spinner-dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes bounce { from { transform: translateY(0); opacity: 0.6; } to { transform: translateY(-8px); opacity: 1; } }
+        .loading-hint { color: var(--heading-color); font-weight: 600; margin-top: 10px; }
+    </style>
+    <div class="global-loading-overlay" id="globalLoading">
+        <div class="text-center">
+            <div class="d-flex justify-content-center">
+                <div class="spinner-dot"></div>
+                <div class="spinner-dot"></div>
+                <div class="spinner-dot"></div>
+            </div>
+            <div class="loading-hint">Preparing insights…</div>
+        </div>
+    </div>
+    
+    <!-- Sidebar Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const globalLoading = document.getElementById('globalLoading');
+            let loadingCounter = 0;
+            
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            }
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                        sidebar.classList.remove('show');
+                    }
+                }
+            });
+
+            // Global loading helpers
+            window.showGlobalLoading = function(hint){
+                loadingCounter++;
+                if (globalLoading) {
+                    const hintEl = globalLoading.querySelector('.loading-hint');
+                    if (hintEl && hint) hintEl.textContent = hint;
+                    globalLoading.classList.add('show');
+                    document.body.style.pointerEvents = 'none';
+                }
+            };
+            window.hideGlobalLoading = function(){
+                loadingCounter = Math.max(0, loadingCounter - 1);
+                if (loadingCounter === 0 && globalLoading) {
+                    globalLoading.classList.remove('show');
+                    document.body.style.pointerEvents = '';
+                }
+            };
+            // Fetch wrapper
+            window.fetchWithLoading = async function(url, options={}, hint){
+                try{
+                    window.showGlobalLoading(hint);
+                    const res = await fetch(url, options);
+                    return res;
+                } finally {
+                    window.hideGlobalLoading();
+                }
+            }
+
+            // Delegate to links with data-loading-hint to show overlay on navigation
+            document.body.addEventListener('click', function(e){
+                const link = e.target && e.target.closest ? e.target.closest('a[data-loading-hint]') : null;
+                if(link){
+                    const hint = link.getAttribute('data-loading-hint') || 'Loading…';
+                    window.showGlobalLoading(hint);
+                }
+            });
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

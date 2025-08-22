@@ -1,0 +1,252 @@
+{% extends "bloodapp/base.html" %}
+{% block title %}Blood Chemistry Report{% endblock %}
+{% block content %}
+<div class="report-a4">
+    <!-- Header -->
+    <div class="report-header">
+        <div>
+            <div class="brand">Functional Health Report</div>
+            <div class="subtitle">A comprehensive analysis of your patient's test results</div>
+        </div>
+        <div class="meta">
+            <div><strong>Patient:</strong> {{ patient_name }}</div>
+            <div><strong>Date:</strong> {{ analysis_date|date:"F j, Y" }}</div>
+            <div><strong>Analyzed Markers:</strong> {{ markers_count }}</div>
+        </div>
+    </div>
+
+    <!-- Intro Pages (3 pages) -->
+    <div class="section page-break-after">
+        <h3>Blood Chemistry Analysis</h3>
+        <p>Welcome to your Functional Health Report. This document translates your laboratory biomarkers into a clinically useful narrative. We combine reference intervals, optimal target ranges informed by functional and preventive medicine, and decision logic to illuminate areas of resilience and concern.</p>
+        <p>Each biomarker reflects a physiological system: metabolic health, liver and kidney function, cardiovascular status, hematology, micronutrient sufficiency, and inflammation. By examining patterns across markers rather than isolated values, we identify potential root causes and prioritize the most impactful changes.</p>
+        <p><strong>What you will find in this report:</strong></p>
+        <ul>
+            <li>A visual overview of each analyzed biomarker with Normal and Optimal ranges</li>
+            <li>Estimated risks for key conditions derived from your data</li>
+            <li>An integrated treatment plan covering lifestyle, nutrition, and supplements</li>
+        </ul>
+    </div>
+
+    <div class="section page-break-after">
+        <h3>How to Interpret Ranges</h3>
+        <p><strong>Normal Range</strong> (orange) is the statistical range found in a broad population. Values within this band are not typically flagged by conventional labs, yet can still leave room for optimization.</p>
+        <p><strong>Optimal Range</strong> (green) targets physiology associated with the best outcomes in the literature and clinical practice. Moving toward optimal often improves energy, cognition, sleep, performance, and long‑term risk.</p>
+        <p>Your value is shown as a <strong>black vertical line</strong> across the bar. The further the line is from the green band, the stronger the indication to address that area.</p>
+        <p>Context matters. Adjacent markers and your history guide interpretation. Use this report with a qualified practitioner.</p>
+    </div>
+
+    <div class="section page-break-after">
+        <h3>Methodology</h3>
+        <p>We normalize units and compare your values against both Normal and Optimal ranges for each biomarker. Where applicable, we incorporate symptom questionnaires and pattern analysis across related markers. A rules engine translates patterns into probabilistic risk estimates for functional health conditions. These estimates guide prioritization, not diagnosis.</p>
+        <p>Treatment suggestions are evidence‑informed and conservative in dosing, emphasizing behavior and nutrition first. Supplements are included where benefit‑risk balance is favorable. Always confirm with your clinician, particularly when pregnant, nursing, on medications, or with chronic conditions.</p>
+        <p>Data privacy: your inputs are processed to generate this report and stored securely for continuity of care. You may request deletion at any time.</p>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="section">
+        <h3>Executive Summary</h3>
+        <p>This report analyzes your recent blood biomarkers and translates them into clear, actionable insights. We compare each value against Normal and Optimal reference ranges. Optimal ranges reflect target levels associated with the best outcomes in functional and preventive medicine literature.</p>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-title">Overall Findings</div>
+                <div class="summary-body">
+                    <div><strong>Out of Normal:</strong> {{ outside_normal_count }}</div>
+                    <div><strong>Outside Optimal (but normal):</strong> {{ outside_optimal_count }}</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-title">Top Markers to Address</div>
+                <ol class="mb-0">
+                    {% for h in highlights %}
+                    <li>{{ h.display_name }}{% if h.patient_value is not None %}: {{ h.patient_value }} {{ h.units }}{% endif %}</li>
+                    {% empty %}
+                    <li>All reviewed markers are within optimal ranges.</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            <div class="summary-card">
+                <div class="summary-title">How to Read This Report</div>
+                <p class="mb-0 small">Each biomarker includes a horizontal range bar. The light band shows the Normal range; the green band indicates the Optimal range. Your value is plotted with a colored indicator that becomes redder the further it deviates from optimal.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section page-break-after">
+        <h3>Biomarkers</h3>
+        <div class="markers-grid">
+            {% for m in markers %}
+            <div class="marker-card">
+                <div class="marker-head">
+                    <div>
+                        <div class="marker-name">{{ m.display_name }}</div>
+                        <div class="marker-units">Units: {{ m.units }}</div>
+                    </div>
+                    <div class="marker-value">{{ m.patient_value }} {{ m.units }}</div>
+                </div>
+                <div class="marker-range">
+                    <svg viewBox="0 0 100 12" preserveAspectRatio="none" class="range-svg">
+                        <!-- Normal band (orange) spans entire scale -->
+                        <rect x="0" y="3" width="100" height="6" rx="3" fill="#f7c59f" />
+                        <!-- Optimal band (green) within normal band -->
+                        {% if m.opt_start_pct is not None and m.opt_width_pct is not None %}
+                        <rect x="{{ m.opt_start_pct }}" y="3" width="{{ m.opt_width_pct }}" height="6" rx="3" fill="#a8dfb0" />
+                        {% endif %}
+                        <!-- Patient value: firm black line across bar -->
+                        {% if m.patient_pos_pct is not None %}
+                        <line x1="{{ m.patient_pos_pct }}" y1="0" x2="{{ m.patient_pos_pct }}" y2="12" stroke="#111" stroke-width="1.4" />
+                        {% endif %}
+                    </svg>
+                    <div class="range-labels">
+                        <div>Normal: {{ m.normal_min }}–{{ m.normal_max }}</div>
+                        <div>Optimal: {{ m.optimal_min }}–{{ m.optimal_max }}</div>
+                    </div>
+                </div>
+                {% if m.background %}
+                <div class="marker-notes">{{ m.background }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="section page-break-after">
+        <h3>Health Concerns</h3>
+        <p class="muted">Potential concerns inferred from your biomarkers and questionnaires. The donut chart indicates estimated relative risk.</p>
+        <div class="concerns-grid">
+            {% for c in conditions %}
+            <div class="concern-card">
+                <svg viewBox="0 0 120 120" class="donut">
+                    <circle class="donut-ring" cx="60" cy="60" r="45" stroke="#e9ecef" stroke-width="10" fill="transparent" />
+                    <circle class="donut-segment" cx="60" cy="60" r="45" stroke="{{ c.ring_color }}" stroke-width="10" fill="transparent"
+                            stroke-dasharray="{{ c.ring_dash }}, {{ c.circumference }}" stroke-linecap="round" transform="rotate(-90 60 60)" />
+                    <text x="60" y="65" text-anchor="middle" class="donut-text">{{ c.risk_score|default:"—" }}%</text>
+                </svg>
+                <div class="concern-title">{{ c.display_name }}</div>
+                {% if c.background %}
+                    <div class="concern-notes">{{ c.background }}</div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="muted">No significant concerns identified.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Treatment Plan</h3>
+        <p class="muted">This plan outlines evidence-informed lifestyle, nutrition, and supplement strategies. Discuss with your clinician before making changes.</p>
+        {% if plan %}
+            <div class="plan-grid">
+                {% if plan.lifestyle_recommendations %}
+                <div class="plan-card">
+                    <div class="plan-title">Lifestyle</div>
+                    <ul>
+                        {% for item in plan.lifestyle_recommendations %}
+                        <li>{% if item.title %}<strong>{{ item.title }}:</strong> {% endif %}{{ item.description|default:item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                {% if plan.dietary_recommendations %}
+                <div class="plan-card">
+                    <div class="plan-title">Diet & Nutrition</div>
+                    <ul>
+                        {% for item in plan.dietary_recommendations %}
+                        <li>{% if item.title %}<strong>{{ item.title }}:</strong> {% endif %}{{ item.description|default:item|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                {% if plan.supplement_recommendations %}
+                <div class="plan-card">
+                    <div class="plan-title">Supplements</div>
+                    <ul>
+                        {% for supp in plan.supplement_recommendations %}
+                        <li>{% if supp.name %}<strong>{{ supp.name }}</strong>{% endif %}{% if supp.dosage %} — {{ supp.dosage }}{% endif %}{% if supp.timing %} ({{ supp.timing }}){% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if plan.follow_up_recommendations %}
+            <div class="plan-followup">
+                <div class="plan-title">Follow-up Recommendations</div>
+                <ul>
+                    {% for item in plan.follow_up_recommendations %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        {% else %}
+            <div class="muted">Treatment plan not available yet.</div>
+        {% endif %}
+    </div>
+
+    <div class="footer no-print">
+        <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-print me-2"></i>Print</button>
+    </div>
+</div>
+
+<style>
+* { box-sizing: border-box; }
+/* A4-like layout */
+.report-a4 { width: 100%; max-width: 210mm; margin: 0 auto; padding: 12mm 10mm; background: #fff; color: #1f2937; }
+.report-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 16px; }
+.brand { font-size: 22px; font-weight: 800; letter-spacing: 0.5px; color: #1f2937; }
+.subtitle { font-size: 12px; color: #6b7280; }
+.meta { text-align: right; font-size: 12px; color: #374151; }
+
+.section { margin: 14px 0; }
+.section h3 { font-size: 14px; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #e5e7eb; }
+.muted { color: #6b7280; font-size: 11px; }
+
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.summary-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; background: #fafafa; }
+.summary-title { font-weight: 600; margin-bottom: 4px; font-size: 12px; }
+.summary-body { font-size: 11px; color: #374151; }
+
+.markers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.marker-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; break-inside: avoid; page-break-inside: avoid; }
+.marker-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.marker-name { font-weight: 700; font-size: 12px; }
+.marker-units { font-size: 10px; color: #6b7280; }
+.marker-value { font-weight: 700; font-size: 12px; }
+.marker-range { margin: 4px 0 4px; }
+.range-svg { width: 100%; height: 20px; }
+.range-labels { display: flex; justify-content: space-between; font-size: 10px; color: #6b7280; }
+.marker-notes { font-size: 11px; color: #374151; margin-top: 4px; line-height: 1.35; }
+
+.concerns-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.concern-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; text-align: center; break-inside: avoid; page-break-inside: avoid; }
+.donut { width: 120px; height: 120px; display: block; margin: 0 auto 6px; }
+.donut-text { font-size: 14px; fill: #374151; font-weight: 700; }
+.concern-title { font-weight: 700; margin-bottom: 4px; font-size: 12px; }
+.concern-notes { font-size: 11px; color: #374151; line-height: 1.35; }
+
+.plan-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.plan-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; break-inside: avoid; page-break-inside: avoid; }
+.plan-title { font-weight: 700; margin-bottom: 4px; font-size: 12px; }
+.plan-followup { border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; margin-top: 8px; }
+
+.footer { margin-top: 10mm; display: flex; justify-content: flex-end; }
+
+@media print {
+    body { background: #fff; }
+    .no-print { display: none !important; }
+    .navbar, .sidebar, .footer { display: none !important; }
+    .page-break-after { page-break-after: always; }
+    .report-a4 { padding: 8mm 8mm; font-size: 11px; line-height: 1.35; }
+}
+</style>
+
+<script>
+// Auto-trigger print for convenience when opened from Download Report
+window.addEventListener('load', function() {
+    try { setTimeout(function(){ window.print(); }, 400); } catch (e) {}
+});
+</script>
+{% endblock %}
+
